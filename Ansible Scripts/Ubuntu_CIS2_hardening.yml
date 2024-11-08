@@ -1,0 +1,139 @@
+---
+- name: Harden Ubuntu Server to CIS Level 2
+  hosts: all
+  become: yes
+  vars:
+    ssh_port: 22
+
+  tasks:
+    # 1. Configure Password Complexity Requirements
+    - name: Enforce password complexity - minimum length, number of digits, and special characters
+      lineinfile:
+        path: /etc/security/pwquality.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      with_items:
+        - { regexp: '^#? minlen', line: 'minlen = 14' }
+        - { regexp: '^#? dcredit', line: 'dcredit = -1' }
+        - { regexp: '^#? ucredit', line: 'ucredit = -1' }
+        - { regexp: '^#? ocredit', line: 'ocredit = -1' }
+        - { regexp: '^#? lcredit', line: 'lcredit = -1' }
+
+    # 2. Lock root account
+    - name: Lock root account
+      user:
+        name: root
+        shell: /usr/sbin/nologin
+
+    # 3. Configure SSH for security
+    - name: Set SSH to use Protocol 2 only
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?Protocol'
+        line: 'Protocol 2'
+        create: yes
+
+    - name: Disable SSH root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin no'
+        create: yes
+
+    - name: Set SSH idle timeout
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?ClientAliveInterval'
+        line: 'ClientAliveInterval 300'
+        create: yes
+
+    - name: Set SSH MaxAuthTries to 4
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?MaxAuthTries'
+        line: 'MaxAuthTries 4'
+        create: yes
+
+    - name: Restart SSHD service
+      service:
+        name: ssh
+        state: restarted
+
+    # 4. Ensure firewall (ufw) is configured
+    - name: Ensure UFW is installed
+      apt:
+        name: ufw
+        state: present
+        update_cache: yes
+
+    - name: Deny all incoming by default
+      ufw:
+        rule: deny
+        direction: incoming
+        state: enabled
+
+    - name: Allow outgoing connections
+      ufw:
+        rule: allow
+        direction: outgoing
+        state: enabled
+
+    - name: Allow SSH access
+      ufw:
+        rule: allow
+        port: "{{ ssh_port }}"
+        proto: tcp
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
+
+    # 5. Ensure cron permissions are configured
+    - name: Ensure cron.allow and cron.deny are configured
+      copy:
+        dest: "/etc/cron.allow"
+        content: "root\n"
+        mode: '0600'
+      notify: restart_cron
+
+    # 6. Restrict /etc/shadow and other critical file permissions
+    - name: Ensure permissions on /etc/shadow are configured
+      file:
+        path: /etc/shadow
+        owner: root
+        group: shadow
+        mode: '0640'
+
+    - name: Ensure permissions on /etc/passwd are configured
+      file:
+        path: /etc/passwd
+        owner: root
+        group: root
+        mode: '0644'
+
+    # 7. Disable IPv6 (if not needed)
+    - name: Disable IPv6 in sysctl
+      sysctl:
+        name: net.ipv6.conf.all.disable_ipv6
+        value: 1
+        state: present
+        reload: yes
+
+    # 8. Set up password aging policies
+    - name: Set password expiration to 90 days
+      lineinfile:
+        path: /etc/login.defs
+        regexp: '^PASS_MAX_DAYS'
+        line: 'PASS_MAX_DAYS 90'
+
+    - name: Ensure password minimum days is 7
+      lineinfile:
+        path: /etc/login.defs
+        regexp: '^PASS_MIN_DAYS'
+        line: 'PASS_MIN_DAYS 7'
+
+  handlers:
+    - name: restart_cron
+      service:
+        name: cron
+        state: restarted
