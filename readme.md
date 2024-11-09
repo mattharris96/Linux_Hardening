@@ -5,6 +5,7 @@ The initial scope of this project is to create a method to easily and quickly de
 - bash-lint.yml
 - ansible-lint.yml
 - markdown-lint.yml
+---
 **note all linters currently need the rule set customising to be effective**
 ### Basic Design for this project:
 
