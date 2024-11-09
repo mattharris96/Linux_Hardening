@@ -14,7 +14,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
       - name: Run ShellCheck
-        uses: koalaman/shellcheck-action@v2
-        with:
-          args: ./**/*.sh
+        run: |
+          # Find all .sh files and check them with ShellCheck
+          find . -name '*.sh' -print0 | xargs -0 shellcheck
