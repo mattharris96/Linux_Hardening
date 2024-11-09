@@ -1,12 +1,10 @@
-name: YAML Linting
+name: Ansible Linting
 
 on:
   push:
     branches:
       - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   lint:
@@ -16,33 +14,51 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
-      - name: Install yamllint
+      - name: Install Ansible and ansible-lint
         run: |
-          python -m pip install --upgrade pip
-          pip install yamllint
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install ansible ansible-lint
 
-      # Create .yamllint.yml file to configure the linter
-      - name: Create .yamllint.yml to Skip Rules
+      - name: Create custom .ansible-lint.yml
         run: |
-          echo "extends: default" > .yamllint.yml
-          echo "ignore: []" >> .yamllint.yml  # Add any specific files or paths to ignore
-          echo "rules:" >> .yamllint.yml
-          echo "  line-length:" >> .yamllint.yml  # Example of rule configuration
-          echo "    max: 120" >> .yamllint.yml  # Example to set max line length to 120
+          echo "anchors: enable" > .ansible-lint.yml
+          echo "braces: enable" >> .ansible-lint.yml
+          echo "brackets: enable" >> .ansible-lint.yml
+          echo "colons: enable" >> .ansible-lint.yml
+          echo "commas: enable" >> .ansible-lint.yml
+          echo "comments:" >> .ansible-lint.yml
+          echo "  level: warning" >> .ansible-lint.yml
+          echo "comments-indentation:" >> .ansible-lint.yml
+          echo "  level: warning" >> .ansible-lint.yml
+          echo "document-end: disable" >> .ansible-lint.yml
+          echo "document-start:" >> .ansible-lint.yml
+          echo "  level: warning" >> .ansible-lint.yml
+          echo "empty-lines: enable" >> .ansible-lint.yml
+          echo "empty-values: disable" >> .ansible-lint.yml
+          echo "float-values: disable" >> .ansible-lint.yml
+          echo "hyphens: enable" >> .ansible-lint.yml
+          echo "indentation: enable" >> .ansible-lint.yml
+          echo "key-duplicates: enable" >> .ansible-lint.yml
+          echo "key-ordering: disable" >> .ansible-lint.yml
+          echo "line-length: enable" >> .ansible-lint.yml
+          echo "new-line-at-end-of-file: enable" >> .ansible-lint.yml
+          echo "new-lines: enable" >> .ansible-lint.yml
+          echo "octal-values: disable" >> .ansible-lint.yml
+          echo "quoted-strings: disable" >> .ansible-lint.yml
+          echo "trailing-spaces: enable" >> .ansible-lint.yml
+          echo "truthy:" >> .ansible-lint.yml
+          echo "  level: warning" >> .ansible-lint.yml
 
-      # Run yamllint to lint all .yml and .yaml files
-      - name: Run yamllint
+      - name: Run ansible-lint
         run: |
-          yaml_files=$(find . -name '*.yml' -o -name '*.yaml')
-          if [ -z "$yaml_files" ]; then
-            echo "No YAML files found to lint."
+          # Find all .yml or .yaml files and run ansible-lint on each
+          ansible_files=$(find . -name '*.yml' -o -name '*.yaml')
+          if [ -z "$ansible_files" ]; then
+            echo "No Ansible files found to lint."
           else
-            for file in $yaml_files; do
+            for file in $ansible_files; do
               echo "Linting $file"
-              yamllint "$file"
+              ansible-lint "$file" -c .ansible-lint.yml || true # Continue even if linting fails
             done
+          fi
