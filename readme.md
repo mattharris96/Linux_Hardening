@@ -88,3 +88,5 @@ end
             - **Destination**: `0.0.0.0/0` (this route will cover all outbound internet traffic).
             - **Target**: Select the **NAT Gateway** you created.
             - Click **Save changes**.
+
+## project Script editing and initial deployment phase starting: 2024/11/09
