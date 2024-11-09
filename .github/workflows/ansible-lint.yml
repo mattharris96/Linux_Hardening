@@ -7,9 +7,7 @@ on:
   pull_request:
     branches:
       - main
-
-skip_list:
-  - "1010"  # Rule ID for "No new line at end of file"
+      
 jobs:
   lint:
     runs-on: ubuntu-latest
