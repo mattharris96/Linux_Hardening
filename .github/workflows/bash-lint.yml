@@ -19,9 +19,13 @@ jobs:
 
       - name: Run ShellCheck
         run: |
-          # Find all .sh files and run ShellCheck only if files are found
-          if find . -name '*.sh' | grep -q .; then
-            find . -name '*.sh' -print0 | xargs -0 shellcheck
-          else
+          # Find all .sh files and run ShellCheck on each
+          sh_files=$(find . -name '*.sh')
+          if [ -z "$sh_files" ]; then
             echo "No .sh files found to lint."
+          else
+            for file in $sh_files; do
+              echo "Linting $file"
+              shellcheck "$file"
+            done
           fi
