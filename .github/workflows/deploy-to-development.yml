@@ -1,0 +1,49 @@
+name: Push Changes to Development Branch
+
+on:
+  push:
+    branches:
+      - '*'
+    branches-ignore:
+      - 'main'
+
+jobs:
+  push-to-development:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Fetch latest development branch
+        run: |
+          git fetch origin development:development
+
+      - name: Checkout development branch
+        run: |
+          git checkout development
+
+      - name: Try to merge the changes from the source branch
+        run: |
+          # Try to merge the changes from the current branch into the development branch
+          git merge --no-ff ${{ github.ref }} -m "Merged changes from ${{ github.ref }}"
+        
+      - name: Check for merge conflicts
+        run: |
+          # If there are merge conflicts, exit with an error
+          if git ls-files -u | grep -q .; then
+            echo "Merge conflict detected. Please resolve manually."
+            exit 1
+          else
+            echo "Merge successful. No conflicts."
+          fi
+
+      - name: Push changes to development branch
+        if: success()  # Only push if the merge was successful
+        run: |
+          git push origin development

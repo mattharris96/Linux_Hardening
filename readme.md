@@ -90,3 +90,4 @@ end
             - Click **Save changes**.
 
 ## project Script editing and initial deployment phase starting: 2024/11/09
+Creating an action to depoly non main branches to development as long as there are no merge confilcts
