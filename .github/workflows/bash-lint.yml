@@ -26,6 +26,6 @@ jobs:
           else
             for file in $sh_files; do
               echo "Linting $file"
-              shellcheck "$file" || true
+              shellcheck "$file" || true ##remove the ||true once all scripts have been reviewed and errors corrected
             done
           fi
