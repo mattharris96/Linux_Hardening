@@ -3,6 +3,7 @@
 The initial scope of this project is to create a method to easily and quickly deploy Secuirty Hardened Debian virtal machines, via a series of automation and scripting tools. then to covert those machines to easily and rapidly deployable OVA images which can act as a Secure golden image. The deployment for my specific case will be via amazon AWS. ***Note if like me you are using the AWS free instance please remeber to either shutodwn or delete the VMs after use.***
 **Certain linters are used in this project to ensure code integrity and best practices are followed:**
 - bash-lint.yml
+- ansible-lint.yml
 ### Basic Design for this project:
 
 ```mermaid
