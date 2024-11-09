@@ -1,4 +1,4 @@
-name: Ansible Linting
+name: YAML Linting
 
 on:
   push:
@@ -21,24 +21,28 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Ansible and ansible-lint
+      - name: Install yamllint
         run: |
           python -m pip install --upgrade pip
-          pip install ansible ansible-lint
+          pip install yamllint
 
-      - name: Create .ansible-lint.yml to Skip Rules
+      # Create .yamllint.yml file to configure the linter
+      - name: Create .yamllint.yml to Skip Rules
         run: |
-          echo "skip_list:" > .ansible-lint.yml
-          echo "  - '1010'" >> .ansible-lint.yml  # Skip "No new line at end of file"
+          echo "extends: default" > .yamllint.yml
+          echo "ignore: []" >> .yamllint.yml  # Add any specific files or paths to ignore
+          echo "rules:" >> .yamllint.yml
+          echo "  line-length:" >> .yamllint.yml  # Example of rule configuration
+          echo "    max: 120" >> .yamllint.yml  # Example to set max line length to 120
 
-      - name: Run ansible-lint
+      # Run yamllint to lint all .yml and .yaml files
+      - name: Run yamllint
         run: |
-          ansible_files=$(find . -name '*.yml' -o -name '*.yaml')
-          if [ -z "$ansible_files" ]; then
-            echo "No Ansible files found to lint."
+          yaml_files=$(find . -name '*.yml' -o -name '*.yaml')
+          if [ -z "$yaml_files" ]; then
+            echo "No YAML files found to lint."
           else
-            for file in $ansible_files; do
+            for file in $yaml_files; do
               echo "Linting $file"
-              ansible-lint "$file"
+              yamllint "$file"
             done
-          fi
