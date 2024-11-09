@@ -1,0 +1,45 @@
+name: Markdown Linting
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install markdownlint
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y npm
+          npm install -g markdownlint-cli
+
+      - name: Create markdownlint configuration file
+        run: |
+          # Create a markdownlint configuration file with custom rules
+          echo "{ \"default\": true, \"MD013\": false, \"MD007\": { \"indent\": 4 }, \"MD029\": { \"ol_num_style\": \"ordered\", \"ol_syntax\": \"ordered\" }, \"MD003\": { \"style\": \"atx\" } }" > .markdownlint.json
+          
+          # You can modify or add more rules to the configuration above. For example:
+          # - MD013: Disable line length rule
+          # - MD007: Set list item indent to 4 spaces
+          # - MD029: Set ordered list style to "ordered" and syntax to "ordered"
+          # - MD003: Enforce ATX style for headers
+
+      - name: Run markdownlint
+        run: |
+          # Find all markdown files and run markdownlint on each
+          markdown_files=$(find . -name '*.md')
+          if [ -z "$markdown_files" ]; then
+            echo "No Markdown files found to lint."
+          else
+            for file in $markdown_files; do
+              echo "Linting $file"
+              markdownlint "$file" || true # Continue even if linting fails
+            done
+          fi
