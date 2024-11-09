@@ -4,6 +4,8 @@ The initial scope of this project is to create a method to easily and quickly de
 **Certain linters are used in this project to ensure code integrity and best practices are followed:**
 - bash-lint.yml
 - ansible-lint.yml
+- markdown-lint.yml
+**note all linters currently need the rule set customising to be effective**
 ### Basic Design for this project:
 
 ```mermaid
