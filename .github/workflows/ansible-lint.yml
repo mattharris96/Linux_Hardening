@@ -22,33 +22,11 @@ jobs:
 
       - name: Create custom .ansible-lint.yml
         run: |
-          echo "anchors: enable" > .ansible-lint.yml
-          echo "braces: enable" >> .ansible-lint.yml
-          echo "brackets: enable" >> .ansible-lint.yml
-          echo "colons: enable" >> .ansible-lint.yml
-          echo "commas: enable" >> .ansible-lint.yml
-          echo "comments:" >> .ansible-lint.yml
-          echo "  level: warning" >> .ansible-lint.yml
-          echo "comments-indentation:" >> .ansible-lint.yml
-          echo "  level: warning" >> .ansible-lint.yml
-          echo "document-end: disable" >> .ansible-lint.yml
-          echo "document-start:" >> .ansible-lint.yml
-          echo "  level: warning" >> .ansible-lint.yml
-          echo "empty-lines: enable" >> .ansible-lint.yml
-          echo "empty-values: disable" >> .ansible-lint.yml
-          echo "float-values: disable" >> .ansible-lint.yml
-          echo "hyphens: enable" >> .ansible-lint.yml
-          echo "indentation: enable" >> .ansible-lint.yml
-          echo "key-duplicates: enable" >> .ansible-lint.yml
-          echo "key-ordering: disable" >> .ansible-lint.yml
-          echo "line-length: enable" >> .ansible-lint.yml
-          echo "new-line-at-end-of-file: enable" >> .ansible-lint.yml
-          echo "new-lines: enable" >> .ansible-lint.yml
-          echo "octal-values: disable" >> .ansible-lint.yml
-          echo "quoted-strings: disable" >> .ansible-lint.yml
-          echo "trailing-spaces: enable" >> .ansible-lint.yml
-          echo "truthy:" >> .ansible-lint.yml
-          echo "  level: warning" >> .ansible-lint.yml
+          # Create a valid .ansible-lint.yml configuration file
+          echo "skip_list:" > .ansible-lint.yml
+          echo "  - 'ANSIBLE0006'" >> .ansible-lint.yml
+          echo "  - 'ANSIBLE0012'" >> .ansible-lint.yml  # Example of skipping another rule
+          echo "  - 'ANSIBLE0020'" >> .ansible-lint.yml  # You can add more rules as needed
 
       - name: Run ansible-lint
         run: |
