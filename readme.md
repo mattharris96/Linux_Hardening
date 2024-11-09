@@ -50,7 +50,6 @@ end
             - **Source**: Choose `Custom` and enter the security group’s ID (`sg-xxxx`). This allows instances within the security group to communicate with each other.
         - v. **Outbound rules**:
             - The default outbound rule allows all traffic. You may keep this or restrict it as desired.
-
         - vi. Click **Create security group**.
 2. **Launch EC2 Instances in the Private Subnet**
     - a. Go to the [EC2 Dashboard](https://console.aws.amazon.com/ec2/).
@@ -61,11 +60,26 @@ end
         - **Metwork**: Select your VPC
         - **Subnet**: Select your subnet
         - **Auto-assign public IP**: Disabled 
-
     - f. **Add Storage** and **Tags** as needed.
     - g. **Configure Security Group**:
         - i.  Select **Choose an existing security group**.
         - ii. Choose the security group you created earlier.
     - h. **Review and Launch** the instance.
 3. **Allow outbound-only internet access from the hosts to allow for updates etc**:
-    - a. ***you could set up a **NAT Gateway** in a public subnet and configure the route table accordingly. - the how for this needs to be fleshed out and added here***ß
+    - a. Ensure that the VPC has a public facinf subnet
+    - b. **Creaate a NAT gateway**: 
+        - i. 1. Go to the **VPC Dashboard** in the AWS Console.
+        - ii. Under **NAT Gateways**, click **Create NAT Gateway**.
+        - iii. **Choose a public subnet** for the NAT Gateway. This subnet needs an **Internet Gateway** attached to it to access the internet.
+        - iv. In **Elastic IP Allocation ID**, click **Allocate Elastic IP** and select the allocated IP.
+        - v. Click **Create NAT Gateway**.
+    - c. **Update the Private Subnet’s Route Table**:
+        - i. In the **VPC Dashboard**, go to **Route Tables**.
+        - ii. Identify the **route table** associated with the private subnet where your instance is located.
+            - You may have to look under **Subnets** to confirm which route table is associated with your private subnet.
+       - iii. Click on the private subnet’s route table and go to the **Routes** tab.
+       - iv. Click **Edit routes**.
+       - v. Add a new route:
+            - **Destination**: `0.0.0.0/0` (this route will cover all outbound internet traffic).
+            - **Target**: Select the **NAT Gateway** you created.
+            - Click **Save changes**.
