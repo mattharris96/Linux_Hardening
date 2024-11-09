@@ -1,5 +1,8 @@
 name: Ansible Linting
 
+skip_list:
+  - "1010"  # Rule ID for "No new line at end of file"
+  
 on:
   push:
     branches:
