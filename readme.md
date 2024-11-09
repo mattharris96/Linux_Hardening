@@ -5,12 +5,10 @@ The initial scope of this project is to create a method to easily and quickly de
 ```mermaid
 graph TB
   subgraph AWS_EC2 [AWS EC2]
-    Host1[Ubuntu Server - Host 1]
+    Host1
     Host1 -->|deploy| HardenedHost[CIS Hardened Ubuntu Machine]
-
-    subgraph Host1Details [Host 1 Details]
+    subgraph Host1 [Ubuntu Server - Host 1]
       Ansible[Ansible]
       Terraform[Terraform]
     end
-    Host1Details --> Host1
   end
