@@ -20,7 +20,7 @@ graph TB
     end
 end
 ```
-## Deploy and set up of initial EC2 image:
+## Deploy and set up of initial EC2 image: ***Note: Future state of the bellow is that this deployment will be handled by GitHub actions but manual creation will be done until the fundamental deploy scripts for the secure host are finalised and optimised.***
 1. **create a vpc for your deployment**:
     - a. Go to the [VPC Dashboard](https://console.aws.amazon.com/vpc/) in the AWS Management Console.
     - b. Click **Create VPC**.
@@ -90,3 +90,4 @@ end
             - Click **Save changes**.
 
 ## project Script editing and initial deployment phase starting: 2024/11/09
+Creating an action to depoly non main branches to development as long as there are no merge confilcts
