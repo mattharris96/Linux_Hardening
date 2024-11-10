@@ -1,12 +1,16 @@
 # Linux Hardening Automation Project
 ## project start date: 2024/11/08
-The initial scope of this project is to create a method to easily and quickly deploy Secuirty Hardened Debian virtal machines, via a series of automation and scripting tools. then to covert those machines to easily and rapidly deployable OVA images which can act as a Secure golden image. The deployment for my specific case will be via amazon AWS. ***Note if like me you are using the AWS free instance please remeber to either shutodwn or delete the VMs after use.***
+The initial scope of this project is to create a method to easily and quickly deploy Secuirty Hardened Debian virtal machines, via a series of automation and scripting tools. then to covert those machines to easily and rapidly deployable OVA images which can act as a Secure golden image. The deployment for my specific case will be via amazon AWS. 
+
+***Note if like me you are using the AWS free instance please remeber to either shutodwn or delete the VMs after use.***
+
 **Certain linters are used in this project to ensure code integrity and best practices are followed:**
 - bash-lint.yml
 - ansible-lint.yml
 - markdown-lint.yml
 
 **note all linters currently need the rule set customising to be effective**
+
 ### Basic Design for this project:
 
 ```mermaid
@@ -20,7 +24,10 @@ graph TB
     end
 end
 ```
-## Deploy and set up of initial EC2 image: ***Note: Future state of the bellow is that this deployment will be handled by GitHub actions but manual creation will be done until the fundamental deploy scripts for the secure host are finalised and optimised.***
+## Deploy and set up of initial EC2 image:
+
+***Note: the bellow will eventually be conducted via GitHub actions rather than manual***
+
 1. **create a vpc for your deployment**:
     - a. Go to the [VPC Dashboard](https://console.aws.amazon.com/vpc/) in the AWS Management Console.
     - b. Click **Create VPC**.
@@ -88,6 +95,3 @@ end
             - **Destination**: `0.0.0.0/0` (this route will cover all outbound internet traffic).
             - **Target**: Select the **NAT Gateway** you created.
             - Click **Save changes**.
-
-## project Script editing and initial deployment phase starting: 2024/11/09
-Creating an action to depoly non main branches to development as long as there are no merge confilcts
