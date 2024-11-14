@@ -22,3 +22,8 @@ graph TB
     end
 end
 ```
+## Process Followed:
+
+1) Install a Ubuntu virtual machine
+2) ensure that networking is configured and add the install ansible and install teraform bash scripts to the host 
+3) run the 2 bash scripts
